@@ -18,7 +18,7 @@ body {
     margin-top: 0;
 }
 
-#username, #message {
+#username, #password, #message {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
