@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-    if (localStorage.getItem('username')) {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
         document.querySelector('.login-box').style.display = 'none';
         document.querySelector('.shoutbox-container').style.display = 'block';
-        document.getElementById('user-display').innerText = localStorage.getItem('username');
+        document.getElementById('user-display').innerText = storedUsername;
         loadMessages();
     }
 });
@@ -10,23 +11,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const errorElement = document.getElementById('login-error');
 
     const storedPassword = localStorage.getItem(`user_${username}`);
-    if (storedPassword === password) {
+    
+    if (storedPassword === null) {
+        // User does not exist, register new user
+        if (username && password) {
+            localStorage.setItem(`user_${username}`, password);
+            localStorage.setItem('username', username);
+            document.querySelector('.login-box').style.display = 'none';
+            document.querySelector('.shoutbox-container').style.display = 'block';
+            document.getElementById('user-display').innerText = username;
+            loadMessages();
+        }
+    } else if (storedPassword === password) {
+        // Successful login
         localStorage.setItem('username', username);
         document.querySelector('.login-box').style.display = 'none';
         document.querySelector('.shoutbox-container').style.display = 'block';
         document.getElementById('user-display').innerText = username;
         loadMessages();
-    } else if (!storedPassword) {
-        localStorage.setItem(`user_${username}`, password);
-        localStorage.setItem('username', username);
-        document.querySelector('.login-box').style.display = 'none';
-        document.querySelector('.shoutbox-container').style.display = 'block';
-        document.getElementById('user-display').innerText = username;
-        loadMessages();
+        errorElement.textContent = '';
     } else {
-        alert('Incorrect username or password');
+        // Incorrect password
+        errorElement.textContent = 'Incorrect username or password';
     }
 }
 
