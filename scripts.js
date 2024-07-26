@@ -9,12 +9,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function login() {
     const username = document.getElementById('username').value;
-    if (username) {
+    const password = document.getElementById('password').value;
+
+    const storedPassword = localStorage.getItem(`user_${username}`);
+    if (storedPassword === password) {
         localStorage.setItem('username', username);
         document.querySelector('.login-box').style.display = 'none';
         document.querySelector('.shoutbox-container').style.display = 'block';
         document.getElementById('user-display').innerText = username;
         loadMessages();
+    } else if (!storedPassword) {
+        localStorage.setItem(`user_${username}`, password);
+        localStorage.setItem('username', username);
+        document.querySelector('.login-box').style.display = 'none';
+        document.querySelector('.shoutbox-container').style.display = 'block';
+        document.getElementById('user-display').innerText = username;
+        loadMessages();
+    } else {
+        alert('Incorrect username or password');
     }
 }
 
